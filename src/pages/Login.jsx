@@ -60,7 +60,8 @@ function Login() {
             </button>
           </form>
           <p style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.85rem', color: '#9ca3af' }}>
-            Don't have an account? <Link to='/signup' style={{ color: '#6d28d9', fontWeight: '600', textDecoration: 'none' }}>Sign up</Link>
+            <Link to='/forgot-password' style={{ color: '#6d28d9', fontWeight: '600', textDecoration: 'none', display: 'block', textAlign: 'center', marginBottom: '1rem', fontSize: '0.85rem' }}>Forgot password?</Link>
+          Don't have an account? <Link to='/signup' style={{ color: '#6d28d9', fontWeight: '600', textDecoration: 'none' }}>Sign up</Link>
           </p>
         </div>
       </div>

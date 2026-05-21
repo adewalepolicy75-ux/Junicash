@@ -209,4 +209,63 @@ app.post('/api/user/verify-pin', async (req, res) => {
   }
 });
 
+
+app.post('/api/auth/forgot-password', async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ message: "No account found with that email" });
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    otpStore[email] = { otp, expires: Date.now() + 10 * 60 * 1000 };
+    await sendOTP(email, otp);
+    res.json({ message: 'OTP sent' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.post('/api/auth/reset-password', async (req, res) => {
+  try {
+    const { email, otp, newPassword } = req.body;
+    const stored = otpStore[email];
+    if (Date.now() > stored.expires) return res.status(400).json({ message: 'OTP expired. Please request again.' });
+    if (stored.otp !== otp) return res.status(400).json({ message: 'Invalid OTP' });
+    delete otpStore[email];
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
+    await User.findOneAndUpdate({ email }, { password: hashedPassword });
+    res.json({ message: 'Password reset successful' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.post('/api/user/forgot-pin', async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const user = await User.findById(userId);
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    otpStore[user.email] = { otp, expires: Date.now() + 10 * 60 * 1000 };
+    await sendOTP(user.email, otp);
+    res.json({ message: 'OTP sent' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.post('/api/user/reset-pin', async (req, res) => {
+  try {
+    const { userId, otp, newPin } = req.body;
+    const user = await User.findById(userId);
+    const stored = otpStore[user.email];
+    if (Date.now() > stored.expires) return res.status(400).json({ message: 'OTP expired. Please request again.' });
+    if (stored.otp !== otp) return res.status(400).json({ message: 'Invalid OTP' });
+    delete otpStore[user.email];
+    const hashedPin = await bcrypt.hash(newPin, 10);
+    await User.findByIdAndUpdate(userId, { pin: hashedPin });
+    res.json({ message: 'PIN reset successful' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 app.listen(PORT, () => console.log('Server running on port ' + PORT));
