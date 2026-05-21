@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>finance-dashboard</title>
+  <style>
+@keyframes fadeInRight {
+  from { opacity: 0; transform: translateX(60px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes float {
+  0%   { transform: translateY(0px); }
+  10%  { transform: translateY(-20px); }
+  20%  { transform: translateY(0px); }
+  30%  { transform: translateY(-18px); }
+  40%  { transform: translateY(0px); }
+  60%  { transform: translateY(-8px); }
+  80%  { transform: translateY(-4px); }
+  100% { transform: translateY(0px); }
+}
+.hero-img {
+  animation: fadeInRight 0.6s ease forwards, float 5s ease-in-out 0.6s infinite;
+}
+</style></head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
