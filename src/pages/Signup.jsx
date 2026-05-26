@@ -5,12 +5,26 @@ import { registerUser } from '../services/api'
 
 function Signup() {
   const [step, setStep] = useState(1)
-  const [form, setForm] = useState({ name: '', email: '', password: '', confirm: '' })
+  const [form, setForm] = useState({ firstName: '', middleName: '', lastName: '', email: '', password: '', confirm: '' })
   const [otp, setOtp] = useState(['', '', '', '', '', ''])
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState('')
   const navigate = useNavigate()
+
+  const getPasswordStrength = (pwd) => {
+    let score = 0;
+    if (pwd.length >= 8) score++
+    if (/[A-Z]/.test(pwd)) score++
+    if (/[a-z]/.test(pwd)) score++
+    if (/[0-9]/.test(pwd)) score++
+    if (/[!@#$%^&*]/.test(pwd)) score++
+    if (score <= 1) return { label: 'Very Weak', color: '#ef4444', width: '20%' }
+    if (score === 2) return { label: 'Weak', color: '#f97316', width: '40%' }
+    if (score === 3) return { label: 'Fair', color: '#eab308', width: '60%' }
+    if (score === 4) return { label: 'Strong', color: '#22c55e', width: '80%' }
+    return { label: 'Very Strong', color: '#16a34a', width: '100%' }
+  }
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value })
@@ -18,12 +32,17 @@ function Signup() {
 
   const handleSendOtp = async (e) => {
     e.preventDefault()
-    if (!form.name || !form.email || !form.password || !form.confirm) {
-      setError('Please fill in all fields')
+    if (!form.firstName || !form.lastName || !form.email || !form.password || !form.confirm) {
+      setError('Please fill in all required fields')
       return
     }
     if (form.password !== form.confirm) {
       setError('Passwords do not match')
+      return
+    }
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/
+    if (!passwordRegex.test(form.password)) {
+      setError('Password must be at least 8 characters with uppercase, lowercase, number and symbol')
       return
     }
     setLoading(true)
@@ -68,7 +87,7 @@ function Signup() {
       setError(verifyData.message || 'Invalid code')
       return
     }
-    const res = await registerUser({ name: form.name, email: form.email, password: form.password })
+    const res = await registerUser({ firstName: form.firstName, middleName: form.middleName, lastName: form.lastName, email: form.email, password: form.password })
     setLoading(false)
     if (res.user) {
       localStorage.setItem('user', JSON.stringify(res.user))
@@ -78,7 +97,7 @@ function Signup() {
     }
   }
 
-  const input = { background: '#ffffff', border: '1px solid #c4b5fd', borderRadius: '10px', color: '#0a0a0f', padding: '0.75rem 1rem', fontSize: '0.95rem', width: '100%', outline: 'none', marginBottom: '1rem' }
+  const input = { background: '#ffffff', border: '1px solid #c4b5fd', borderRadius: '10px', color: '#0a0a0f', padding: '0.75rem 1rem', fontSize: '0.95rem', width: '100%', outline: 'none', marginBottom: '1rem', boxSizing: 'border-box' }
   const otpBox = { width: '44px', height: '52px', borderRadius: '10px', border: '2px solid #ddd6fe', fontSize: '1.4rem', fontWeight: '800', textAlign: 'center', outline: 'none', color: '#0a0a0f', background: '#f5f3ff' }
 
   return (
@@ -100,14 +119,40 @@ function Signup() {
               </div>
               {error && <div style={{ background: '#fee2e2', border: '1px solid #fecaca', borderRadius: '10px', padding: '0.75rem 1rem', marginBottom: '1rem', color: '#dc2626', fontSize: '0.85rem' }}>{error}</div>}
               <form onSubmit={handleSendOtp}>
-                <label style={{ fontSize: '0.8rem', fontWeight: '600', color: '#6d28d9', display: 'block', marginBottom: '0.4rem' }}>Full Name</label>
-                <input type='text' name='name' placeholder='John Doe' value={form.name} onChange={handleChange} style={input} />
-                <label style={{ fontSize: '0.8rem', fontWeight: '600', color: '#6d28d9', display: 'block', marginBottom: '0.4rem' }}>Email</label>
+                <div style={{ display: 'flex', gap: '0.75rem' }}>
+                  <div style={{ flex: 1 }}>
+                    <label style={{ fontSize: '0.8rem', fontWeight: '600', color: '#6d28d9', display: 'block', marginBottom: '0.4rem' }}>First Name *</label>
+                    <input type='text' name='firstName' placeholder='John' value={form.firstName} onChange={handleChange} style={input} />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <label style={{ fontSize: '0.8rem', fontWeight: '600', color: '#6d28d9', display: 'block', marginBottom: '0.4rem' }}>Last Name *</label>
+                    <input type='text' name='lastName' placeholder='Doe' value={form.lastName} onChange={handleChange} style={input} />
+                  </div>
+                </div>
+                <label style={{ fontSize: '0.8rem', fontWeight: '600', color: '#9ca3af', display: 'block', marginBottom: '0.4rem' }}>Middle Name <span style={{ fontWeight: '400' }}>(optional)</span></label>
+                <input type='text' name='middleName' placeholder='Middle name' value={form.middleName} onChange={handleChange} style={input} />
+                <label style={{ fontSize: '0.8rem', fontWeight: '600', color: '#6d28d9', display: 'block', marginBottom: '0.4rem' }}>Email *</label>
                 <input type='email' name='email' placeholder='you@example.com' value={form.email} onChange={handleChange} style={input} />
-                <label style={{ fontSize: '0.8rem', fontWeight: '600', color: '#6d28d9', display: 'block', marginBottom: '0.4rem' }}>Password</label>
-                <input type='password' name='password' placeholder='••••••••' value={form.password} onChange={handleChange} style={input} />
-                <label style={{ fontSize: '0.8rem', fontWeight: '600', color: '#6d28d9', display: 'block', marginBottom: '0.4rem' }}>Confirm Password</label>
-                <input type='password' name='confirm' placeholder='••••••••' value={form.confirm} onChange={handleChange} style={input} />
+                <label style={{ fontSize: '0.8rem', fontWeight: '600', color: '#6d28d9', display: 'block', marginBottom: '0.4rem' }}>Password *</label>
+                <input type='password' name='password' placeholder='........' value={form.password} onChange={handleChange} style={input} />
+                {form.password && (
+                  <div style={{ marginBottom: '1rem', background: '#f9fafb', borderRadius: '10px', padding: '0.75rem 1rem' }}>
+                    {[
+                      { label: 'At least 8 characters', test: form.password.length >= 8 },
+                      { label: 'Uppercase letter (A-Z)', test: /[A-Z]/.test(form.password) },
+                      { label: 'Lowercase letter (a-z)', test: /[a-z]/.test(form.password) },
+                      { label: 'Number (0-9)', test: /[0-9]/.test(form.password) },
+                      { label: 'Symbol (!@#$%^&*)', test: /[!@#$%^&*]/.test(form.password) },
+                    ].map((rule, i) => (
+                      <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.3rem' }}>
+                        <span style={{ fontSize: '0.8rem', color: rule.test ? '#16a34a' : '#9ca3af' }}>{rule.test ? '✓' : '○'}</span>
+                        <span style={{ fontSize: '0.8rem', color: rule.test ? '#16a34a' : '#9ca3af', fontWeight: rule.test ? '600' : '400' }}>{rule.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <label style={{ fontSize: '0.8rem', fontWeight: '600', color: '#6d28d9', display: 'block', marginBottom: '0.4rem' }}>Confirm Password *</label>
+                <input type='password' name='confirm' placeholder='........' value={form.confirm} onChange={handleChange} style={input} />
                 <button type='submit' disabled={loading} style={{ background: '#6d28d9', color: '#ffffff', border: 'none', borderRadius: '10px', padding: '0.85rem', fontSize: '1rem', fontWeight: '700', cursor: 'pointer', width: '100%', marginTop: '0.5rem', opacity: loading ? 0.7 : 1 }}>
                   {loading ? 'Sending code...' : 'Continue'}
                 </button>
@@ -121,9 +166,7 @@ function Signup() {
           {step === 2 && (
             <>
               <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: '#f5f3ff', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', fontSize: '1.5rem' }}>
-                  📧
-                </div>
+                <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: '#f5f3ff', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', fontSize: '1.5rem' }}>📧</div>
                 <h2 style={{ fontSize: '1.5rem', fontWeight: '800', color: '#0a0a0f', marginBottom: '0.5rem' }}>Check your email</h2>
                 <p style={{ color: '#9ca3af', fontSize: '0.9rem' }}>{success}</p>
               </div>

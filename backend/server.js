@@ -72,7 +72,8 @@ app.post('/api/auth/verify-otp', async (req, res) => {
 
 app.post('/api/auth/signup', async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { firstName, middleName, lastName, email, password } = req.body;
+    const name = [firstName, middleName, lastName].filter(Boolean).join(' ');
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(400).json({ message: 'User already exists' });
     const hashedPassword = await bcrypt.hash(password, 12);
@@ -80,9 +81,9 @@ app.post('/api/auth/signup', async (req, res) => {
     while (await User.findOne({ accountNumber })) {
       accountNumber = generateAccountNumber();
     }
-    const user = new User({ name, email, password: hashedPassword, accountNumber, balance: 0 });
+    const user = new User({ firstName, middleName: middleName || '', lastName, name, email, password: hashedPassword, accountNumber, balance: 0 });
     await user.save();
-    res.status(201).json({ user: { id: user._id, name: user.name, email: user.email, accountNumber: user.accountNumber, balance: user.balance } });
+    res.status(201).json({ user: { id: user._id, name: user.name, firstName: user.firstName || '', middleName: user.middleName || '', lastName: user.lastName || '', email: user.email, accountNumber: user.accountNumber, balance: user.balance, phone: user.phone || '', dateOfBirth: user.dateOfBirth || '', profilePhoto: user.profilePhoto || '' } });
   } catch (err) {
     console.error('Signup error:', err);
     res.status(500).json({ message: err.message });
@@ -96,7 +97,7 @@ app.post('/api/auth/login', async (req, res) => {
     if (!user) return res.status(400).json({ message: 'Invalid credentials' });
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
-    res.json({ user: { id: user._id, name: user.name, email: user.email, accountNumber: user.accountNumber, balance: user.balance } });
+    res.json({ user: { id: user._id, name: user.name, firstName: user.firstName || '', middleName: user.middleName || '', lastName: user.lastName || '', email: user.email, accountNumber: user.accountNumber, balance: user.balance, phone: user.phone || '', dateOfBirth: user.dateOfBirth || '', profilePhoto: user.profilePhoto || '' } });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -263,6 +264,55 @@ app.post('/api/user/reset-pin', async (req, res) => {
     const hashedPin = await bcrypt.hash(newPin, 10);
     await User.findByIdAndUpdate(userId, { pin: hashedPin });
     res.json({ message: 'PIN reset successful' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
+app.post('/api/user/change-password', async (req, res) => {
+  try {
+    const { userId, currentPassword, newPassword } = req.body;
+    const user = await User.findById(userId);
+    if (!user) return res.status(400).json({ message: "User not found" });
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) return res.status(400).json({ message: "Current password is incorrect" });
+    const hashed = await bcrypt.hash(newPassword, 12);
+    await User.findByIdAndUpdate(userId, { password: hashed });
+    res.json({ message: 'Password changed successfully' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.post('/api/user/change-pin', async (req, res) => {
+  try {
+    const { userId, currentPin, newPin } = req.body;
+    const user = await User.findById(userId);
+    if (!user) return res.status(400).json({ message: "User not found" });
+    if (!user.pin) return res.status(400).json({ message: "No PIN set. Please set a PIN first." });
+    const isMatch = await bcrypt.compare(currentPin, user.pin);
+    if (!isMatch) return res.status(400).json({ message: "Current PIN is incorrect" });
+    const hashed = await bcrypt.hash(newPin, 10);
+    await User.findByIdAndUpdate(userId, { pin: hashed });
+    res.json({ message: 'PIN changed successfully' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
+app.post('/api/user/update-profile', async (req, res) => {
+  try {
+    const { userId, firstName, middleName, lastName, phone, dateOfBirth, profilePhoto } = req.body;
+    const name = [firstName, middleName, lastName].filter(Boolean).join(' ');
+    const updated = await User.findByIdAndUpdate(
+      userId,
+      { firstName, middleName: middleName || '', lastName, name, phone, dateOfBirth, profilePhoto },
+      { new: true }
+    ).select('-password');
+    if (!updated) return res.status(404).json({ message: 'User not found' });
+    res.json({ user: { id: updated._id, name: updated.name, firstName: updated.firstName, middleName: updated.middleName, lastName: updated.lastName, email: updated.email, accountNumber: updated.accountNumber, balance: updated.balance, phone: updated.phone, dateOfBirth: updated.dateOfBirth, profilePhoto: updated.profilePhoto } });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

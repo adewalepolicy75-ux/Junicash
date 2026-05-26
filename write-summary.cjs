@@ -1,4 +1,5 @@
-function SummaryCards({ transactions, hideBalance }) {
+const fs = require('fs');
+const code = `function SummaryCards({ transactions, hideBalance }) {
   const currentMonth = new Date().getMonth()
   const currentYear = new Date().getFullYear()
 
@@ -28,7 +29,7 @@ function SummaryCards({ transactions, hideBalance }) {
             {card.label}
           </p>
           <p style={{ fontSize: '1.7rem', fontWeight: '700', color: card.color }}>
-            {hideBalance && card.isAmount ? '****' : card.isAmount ? format(card.value) : card.value}
+            {hideBalance && card.isAmount ? '••••' : card.isAmount ? format(card.value) : card.value}
           </p>
         </div>
       ))}
@@ -36,4 +37,6 @@ function SummaryCards({ transactions, hideBalance }) {
   )
 }
 
-export default SummaryCards
+export default SummaryCards`;
+fs.writeFileSync('src/components/SummaryCards.jsx', code);
+console.log('done');

@@ -10,11 +10,14 @@ import CardPage from './CardPage'
 import BudgetPage from './BudgetPage'
 import AccountPage from './AccountPage'
 import { getTransactions, addTransaction, deleteTransaction, getCurrentUser, logout, refreshUser } from '../services/api'
+import { FiEye, FiEyeOff } from 'react-icons/fi'
 
 function Dashboard() {
   const [transactions, setTransactions] = useState([])
   const [activeTab, setActiveTab] = useState('overview')
   const [user, setUser] = useState(null)
+  const [hideBalance, setHideBalance] = useState(false)
+  const [darkMode, setDarkMode] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -59,7 +62,7 @@ function Dashboard() {
     .sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5)
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f9fafb' }}>
+    <div style={{ minHeight: '100vh', background: darkMode ? '#0a0a0f' : '#f9fafb', color: darkMode ? '#ffffff' : '#0a0a0f' }}>
       <Navbar user={user} onLogout={handleLogout} activeTab={activeTab} setActiveTab={setActiveTab} />
       <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '2rem 1.5rem' }}>
 
@@ -68,9 +71,14 @@ function Dashboard() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
               <span style={{ background: '#f0fdf4', color: '#16a34a', padding: '4px 12px', borderRadius: '20px', fontSize: '0.78rem', fontWeight: '600', border: '1px solid #bbf7d0' }}>NGN Account</span>
             </div>
-            <h2 style={{ fontSize: '2.5rem', fontWeight: '800', color: '#0a0a0f', margin: '0.5rem 0 0.25rem' }}>
-              {formatAmount(totalBalance)}
-            </h2>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', margin: '0.5rem 0 0.25rem', minHeight: '3.5rem' }}>
+              <h2 style={{ fontSize: '2.5rem', fontWeight: '800', color: '#0a0a0f', minWidth: '200px' }}>
+                {hideBalance ? '₦ ****' : formatAmount(totalBalance)}
+              </h2>
+              <button onClick={() => setHideBalance(!hideBalance)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#9ca3af', padding: '0.25rem', flexShrink: 0 }}>
+                {hideBalance ? <FiEye size={22} /> : <FiEyeOff size={22} />}
+              </button>
+            </div>
             <p style={{ color: '#9ca3af', fontSize: '0.8rem', marginBottom: '1.5rem' }}>Last updated just now</p>
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
               {[
@@ -89,7 +97,7 @@ function Dashboard() {
 
         {activeTab === 'overview' && (
           <>
-            <SummaryCards transactions={transactions} />
+            <SummaryCards transactions={transactions} hideBalance={hideBalance} />
             <div style={{ background: '#ffffff', borderRadius: '16px', border: '1px solid #e5e7eb', padding: '1.5rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                 <h3 style={{ fontSize: '1rem', fontWeight: '700', color: '#0a0a0f' }}>Recent Transactions</h3>
@@ -116,7 +124,7 @@ function Dashboard() {
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                     <p style={{ fontWeight: '700', color: tx.type === 'income' ? '#059669' : '#dc2626' }}>
-                      {tx.type === 'income' ? '+' : '-'}{formatAmount(tx.amount)}
+                      {hideBalance ? '****' : (tx.type === 'income' ? '+' : '-') + formatAmount(tx.amount)}
                     </p>
                     <span style={{ color: '#d1d5db' }}>›</span>
                   </div>
@@ -132,7 +140,7 @@ function Dashboard() {
         {activeTab === 'pay' && <PayPage />}
         {activeTab === 'card' && <CardPage user={user} />}
         {activeTab === 'budget' && <BudgetPage transactions={transactions} />}
-        {activeTab === 'account' && <AccountPage user={user} onLogout={handleLogout} />}
+        {activeTab === 'account' && <AccountPage user={user} onLogout={handleLogout} hideBalance={hideBalance} setHideBalance={setHideBalance} darkMode={darkMode} setDarkMode={setDarkMode} />}
 
       </div>
     </div>

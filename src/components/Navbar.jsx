@@ -35,7 +35,7 @@ function Navbar({ user, onLogout, activeTab, setActiveTab }) {
         {user && (
           <div onClick={() => handleTab('account')} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', padding: '0.4rem 0.75rem', borderRadius: '8px', background: activeTab === 'account' ? '#1a1030' : 'transparent' }}>
             <div style={{ width: '34px', height: '34px', borderRadius: '50%', background: '#6d28d9', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: '700', fontSize: '0.9rem' }}>
-              {user.name.charAt(0).toUpperCase()}
+              {user.profilePhoto ? <img src={user.profilePhoto} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} /> : user.name.charAt(0).toUpperCase()}
             </div>
             <span style={{ fontSize: '0.85rem', color: activeTab === 'account' ? '#8b5cf6' : '#9ca3af' }}>Account</span>
           </div>
@@ -62,7 +62,7 @@ function Navbar({ user, onLogout, activeTab, setActiveTab }) {
           {user && (
             <button onClick={() => handleTab('account')} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem 1rem', borderRadius: '8px', border: 'none', cursor: 'pointer', fontSize: '0.95rem', fontWeight: '600', background: activeTab === 'account' ? '#1a1030' : 'transparent', color: activeTab === 'account' ? '#8b5cf6' : '#9ca3af', textAlign: 'left' }}>
               <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#6d28d9', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: '700', fontSize: '0.85rem' }}>
-                {user.name.charAt(0).toUpperCase()}
+                {user.profilePhoto ? <img src={user.profilePhoto} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} /> : user.name.charAt(0).toUpperCase()}
               </div>
               Account
             </button>

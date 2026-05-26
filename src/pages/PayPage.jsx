@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { FiSmartphone, FiWifi, FiTv, FiZap, FiSun, FiCreditCard, FiHash, FiMonitor, FiServer } from 'react-icons/fi'
+import { FiSmartphone, FiWifi, FiTv, FiZap, FiSun, FiCreditCard, FiHash, FiMonitor, FiServer, FiLock } from 'react-icons/fi'
 
 function PayPage() {
   const [search, setSearch] = useState('')
@@ -28,7 +28,7 @@ function PayPage() {
       <div style={{ background: '#ffffff', borderRadius: '16px', border: '1px solid #e5e7eb', padding: '1.5rem' }}>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '10px', padding: '0.75rem 1rem', marginBottom: '1.5rem' }}>
-          <span style={{ color: '#9ca3af' }}>���</span>
+          <span style={{ color: '#9ca3af' }}>🔍</span>
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder='Search for bill' style={{ border: 'none', background: 'transparent', outline: 'none', fontSize: '0.95rem', color: '#0a0a0f', width: '100%' }} />
           {search && <span onClick={() => setSearch('')} style={{ color: '#9ca3af', cursor: 'pointer', fontSize: '1rem' }}>x</span>}
         </div>
@@ -36,12 +36,15 @@ function PayPage() {
         <h3 style={{ fontSize: '0.95rem', fontWeight: '700', color: '#0a0a0f', marginBottom: '1rem' }}>Essentials</h3>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.75rem', marginBottom: '1.5rem' }}>
           {filtered(essentials).map((item) => (
-            <div key={item.label} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem 1.25rem', borderRadius: '12px', border: '1px solid #e5e7eb', cursor: 'pointer', background: '#ffffff' }}>
+            <div key={item.label} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem 1.25rem', borderRadius: '12px', border: '1px solid #f3f4f6', cursor: 'not-allowed', background: '#fafafa', opacity: 0.7 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <span style={{ color: item.color }}>{item.icon}</span>
-                <span style={{ fontSize: '0.95rem', fontWeight: '700', color: '#6d28d9' }}>{item.label}</span>
+                <div>
+                  <span style={{ fontSize: '0.95rem', fontWeight: '700', color: '#6b7280' }}>{item.label}</span>
+                  <p style={{ fontSize: '0.72rem', color: '#9ca3af', marginTop: '0.1rem' }}>Coming soon</p>
+                </div>
               </div>
-              <span style={{ color: '#d1d5db' }}>›</span>
+              <FiLock size={16} color='#9ca3af' />
             </div>
           ))}
         </div>
@@ -49,12 +52,15 @@ function PayPage() {
         <h3 style={{ fontSize: '0.95rem', fontWeight: '700', color: '#0a0a0f', marginBottom: '1rem' }}>Cardless Payments</h3>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.75rem' }}>
           {filtered(cardless).map((item) => (
-            <div key={item.label} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem 1.25rem', borderRadius: '12px', border: '1px solid #e5e7eb', cursor: 'pointer', background: '#ffffff' }}>
+            <div key={item.label} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem 1.25rem', borderRadius: '12px', border: '1px solid #f3f4f6', cursor: 'not-allowed', background: '#fafafa', opacity: 0.7 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <span style={{ color: item.color }}>{item.icon}</span>
-                <span style={{ fontSize: '0.95rem', fontWeight: '700', color: '#6d28d9' }}>{item.label}</span>
+                <div>
+                  <span style={{ fontSize: '0.95rem', fontWeight: '700', color: '#6b7280' }}>{item.label}</span>
+                  <p style={{ fontSize: '0.72rem', color: '#9ca3af', marginTop: '0.1rem' }}>Coming soon</p>
+                </div>
               </div>
-              <span style={{ color: '#d1d5db' }}>›</span>
+              <FiLock size={16} color='#9ca3af' />
             </div>
           ))}
         </div>
