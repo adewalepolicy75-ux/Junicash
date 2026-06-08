@@ -28,7 +28,11 @@ const User = require('./models/User');
 const Transaction = require('./models/Transaction');
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: ['https://junicash.vercel.app', 'http://localhost:5173'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
 app.use(express.json());
 
 const PORT = process.env.PORT || 5000;
