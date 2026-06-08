@@ -55,7 +55,7 @@ function AccountPage({ user, onLogout, hideBalance, setHideBalance, darkMode, se
     if (!profileForm.firstName || !profileForm.lastName) { setProfileError('First and last name are required'); return }
     setProfileLoading(true); setProfileError(''); setProfileSuccess('')
     try {
-      const res = await fetch('http://localhost:5000/api/user/update-profile', {
+      const res = await fetch('https://junicash.onrender.com/api/user/update-profile', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: user.id, ...profileForm })
       })
@@ -94,7 +94,7 @@ function AccountPage({ user, onLogout, hideBalance, setHideBalance, darkMode, se
     if (!topUpAmount || Number(topUpAmount) <= 0) return
     setTopUpLoading(true); setTopUpError(''); setTopUpSuccess('')
     try {
-      const res = await fetch('http://localhost:5000/api/transactions', {
+      const res = await fetch('https://junicash.onrender.com/api/transactions', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ description: 'Top Up', amount: Number(topUpAmount), type: 'income', category: 'Other Income', date: new Date(), userId: user.id })
       })
@@ -111,7 +111,7 @@ function AccountPage({ user, onLogout, hideBalance, setHideBalance, darkMode, se
     if (!passwordRegex.test(newPassword)) { setPasswordError('Password must be at least 8 characters with uppercase, lowercase, number and symbol (!@#$%^&*)'); return }
     setPasswordLoading(true); setPasswordError(''); setPasswordSuccess('')
     try {
-      const res = await fetch('http://localhost:5000/api/user/change-password', {
+      const res = await fetch('https://junicash.onrender.com/api/user/change-password', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: user.id, currentPassword, newPassword })
       })
@@ -145,7 +145,7 @@ function AccountPage({ user, onLogout, hideBalance, setHideBalance, darkMode, se
     if (newPinStr !== confirmNewPinStr) { setPinError('New PINs do not match'); return }
     setPinChangeLoading(true); setPinError(''); setPinChangeSuccess('')
     try {
-      const res = await fetch('http://localhost:5000/api/user/change-pin', {
+      const res = await fetch('https://junicash.onrender.com/api/user/change-pin', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: user.id, currentPin: currentPinStr, newPin: newPinStr })
       })

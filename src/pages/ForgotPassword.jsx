@@ -32,7 +32,7 @@ function ForgotPassword() {
   const handleSendOTP = async () => {
     if (!email) { setError('Please enter your email'); return }
     setLoading(true); setError('')
-    const res = await fetch('http://localhost:5000/api/auth/forgot-password', {
+    const res = await fetch('https://junicash.onrender.com/api/auth/forgot-password', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email })
     })
@@ -49,7 +49,7 @@ function ForgotPassword() {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/;
     if (!passwordRegex.test(newPassword)) { setError('Password must be at least 8 characters with uppercase, lowercase, number and symbol (!@#$%^&*)'); return }
     setLoading(true); setError('')
-    const res = await fetch('http://localhost:5000/api/auth/reset-password', {
+    const res = await fetch('https://junicash.onrender.com/api/auth/reset-password', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, otp, newPassword })
     })

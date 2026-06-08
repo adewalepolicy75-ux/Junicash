@@ -39,7 +39,7 @@ function PinModal({ title, onConfirm, onCancel, userId, mode }) {
     }
     setLoading(true); setError('')
     try {
-      const url = mode === 'set' ? 'http://localhost:5000/api/user/set-pin' : 'http://localhost:5000/api/user/verify-pin'
+      const url = mode === 'set' ? 'https://junicash.onrender.com/api/user/set-pin' : 'https://junicash.onrender.com/api/user/verify-pin'
       const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId, pin: pinStr }) })
       const data = await res.json()
       if (data.message === 'PIN set successfully' || data.message === 'PIN verified') { onConfirm() }
@@ -51,7 +51,7 @@ function PinModal({ title, onConfirm, onCancel, userId, mode }) {
   const handleForgotPin = async () => {
     setLoading(true); setError('')
     try {
-      const res = await fetch('http://localhost:5000/api/user/forgot-pin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId }) })
+      const res = await fetch('https://junicash.onrender.com/api/user/forgot-pin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId }) })
       const data = await res.json()
       if (data.message === 'OTP sent') { setForgotStep(1) }
       else { setError(data.message) }
@@ -66,7 +66,7 @@ function PinModal({ title, onConfirm, onCancel, userId, mode }) {
     if (newPinStr !== confirmNewPinStr) { setError('PINs do not match'); return }
     setLoading(true); setError('')
     try {
-      const res = await fetch('http://localhost:5000/api/user/reset-pin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId, otp, newPin: newPinStr }) })
+      const res = await fetch('https://junicash.onrender.com/api/user/reset-pin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId, otp, newPin: newPinStr }) })
       const data = await res.json()
       if (data.message === 'PIN reset successful') { setForgotStep(2) }
       else { setError(data.message) }

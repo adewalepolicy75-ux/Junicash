@@ -21,7 +21,7 @@ function SendPage({ user }) {
   useEffect(() => {
     const checkPin = async () => {
       if (!user) return
-      const res = await fetch('http://localhost:5000/api/user/' + user.id)
+      const res = await fetch('https://junicash.onrender.com/api/user/' + user.id)
       const data = await res.json()
       setHasPin(!!data.pin)
     }

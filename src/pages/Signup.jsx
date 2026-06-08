@@ -47,7 +47,7 @@ function Signup() {
     }
     setLoading(true)
     setError('')
-    const res = await fetch('http://localhost:5000/api/auth/send-otp', {
+    const res = await fetch('https://junicash.onrender.com/api/auth/send-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: form.email })
@@ -76,7 +76,7 @@ function Signup() {
     if (otpStr.length < 6) { setError('Enter the 6-digit code'); return }
     setLoading(true)
     setError('')
-    const verifyRes = await fetch('http://localhost:5000/api/auth/verify-otp', {
+    const verifyRes = await fetch('https://junicash.onrender.com/api/auth/verify-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: form.email, otp: otpStr })
