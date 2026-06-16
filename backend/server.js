@@ -29,7 +29,7 @@ const Transaction = require('./models/Transaction');
 
 const app = express();
 app.use(cors({
-  origin: ['https://junicash.vercel.app', 'http://localhost:5173'],
+  origin: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
