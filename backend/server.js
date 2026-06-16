@@ -4,21 +4,14 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
-const nodemailer = require('nodemailer');
-
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  }
-});
+const { Resend } = require('resend');
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const otpStore = {};
 
 const sendOTP = async (email, otp) => {
-  await transporter.sendMail({
-    from: '"JuniCash" <' + process.env.EMAIL_USER + '>',
+  await resend.emails.send({
+    from: 'JuniCash <onboarding@resend.dev>',
     to: email,
     subject: 'JuniCash Email Verification',
     html: '<div style="font-family:sans-serif;max-width:400px;margin:0 auto;padding:2rem;background:#f5f3ff;border-radius:16px"><h2 style="color:#6d28d9">JuniCash</h2><p>Your verification code is:</p><h1 style="font-size:2.5rem;letter-spacing:0.2em;color:#0a0a0f;background:#ffffff;padding:1rem;border-radius:12px;text-align:center">' + otp + '</h1><p style="color:#9ca3af;font-size:0.85rem">This code expires in 10 minutes.</p></div>'
