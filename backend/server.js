@@ -41,7 +41,7 @@ const generateAccountNumber = () => {
 
 app.post('/api/auth/send-otp', async (req, res) => {
   try {
-    const { email } = req.body;
+    const email = req.body.email.trim().toLowerCase();
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(400).json({ message: 'User already exists' });
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -55,7 +55,8 @@ app.post('/api/auth/send-otp', async (req, res) => {
 
 app.post('/api/auth/verify-otp', async (req, res) => {
   try {
-    const { email, otp } = req.body;
+    const email = req.body.email.trim().toLowerCase();
+    const { otp } = req.body;
     const stored = otpStore[email];
     if (!stored) return res.status(400).json({ message: 'No OTP found. Please request again.' });
     if (Date.now() > stored.expires) return res.status(400).json({ message: 'OTP expired. Please request again.' });
@@ -69,7 +70,8 @@ app.post('/api/auth/verify-otp', async (req, res) => {
 
 app.post('/api/auth/signup', async (req, res) => {
   try {
-    const { firstName, middleName, lastName, email, password } = req.body;
+    const { firstName, middleName, lastName, password } = req.body;
+    const email = req.body.email.trim().toLowerCase();
     const name = [firstName, middleName, lastName].filter(Boolean).join(' ');
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(400).json({ message: 'User already exists' });
@@ -89,7 +91,8 @@ app.post('/api/auth/signup', async (req, res) => {
 
 app.post('/api/auth/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const email = req.body.email.trim().toLowerCase();
+    const { password } = req.body;
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ message: 'Invalid credentials' });
     const isMatch = await bcrypt.compare(password, user.password);
