@@ -11,7 +11,7 @@ const otpStore = {};
 
 const sendOTP = async (email, otp) => {
   await resend.emails.send({
-    from: 'JuniCash <onboarding@resend.dev>',
+    from: 'JuniCash <noreply@skkuglobal.com>',
     to: email,
     subject: 'JuniCash Email Verification',
     html: '<div style="font-family:sans-serif;max-width:400px;margin:0 auto;padding:2rem;background:#f5f3ff;border-radius:16px"><h2 style="color:#6d28d9">JuniCash</h2><p>Your verification code is:</p><h1 style="font-size:2.5rem;letter-spacing:0.2em;color:#0a0a0f;background:#ffffff;padding:1rem;border-radius:12px;text-align:center">' + otp + '</h1><p style="color:#9ca3af;font-size:0.85rem">This code expires in 10 minutes.</p></div>'
