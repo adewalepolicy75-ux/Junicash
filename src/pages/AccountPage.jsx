@@ -122,6 +122,13 @@ function AccountPage({ user, onLogout, hideBalance, setHideBalance, darkMode, se
     setPasswordLoading(false)
   }
 
+  
+  const handleKeyDown = (e, index, prefix) => {
+    if (e.key === 'Backspace' && !e.target.value && index > 0) {
+      document.getElementById(prefix + (index - 1))?.focus()
+    }
+  }
+
   const handlePinInput = (index, value, type) => {
     if (!/^[0-9]?$/.test(value)) return
     if (type === 'current') {
@@ -293,15 +300,15 @@ function AccountPage({ user, onLogout, hideBalance, setHideBalance, darkMode, se
                 {pinChangeSuccess && <div style={{ background: '#d1fae5', borderRadius: '10px', padding: '0.75rem', marginBottom: '1rem', color: '#059669', fontSize: '0.85rem' }}>{pinChangeSuccess}</div>}
                 <p style={{ fontSize: '0.78rem', fontWeight: '600', color: '#6d28d9', marginBottom: '0.75rem', textAlign: 'center' }}>Current PIN</p>
                 <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', marginBottom: '1.25rem' }}>
-                  {currentPin.map((val, i) => (<input key={i} id={'cp' + i} type='password' maxLength={1} value={val} onChange={e => handlePinInput(i, e.target.value, 'current')} style={pinBox} />))}
+                  {currentPin.map((val, i) => (<input key={i} id={'cp' + i} type='password' maxLength={1} value={val} onChange={e => handlePinInput(i, e.target.value, 'current')} onKeyDown={e => handleKeyDown(e, i, 'cp')} style={pinBox} />))}
                 </div>
                 <p style={{ fontSize: '0.78rem', fontWeight: '600', color: '#6d28d9', marginBottom: '0.75rem', textAlign: 'center' }}>New PIN</p>
                 <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', marginBottom: '1.25rem' }}>
-                  {newPin.map((val, i) => (<input key={i} id={'np' + i} type='password' maxLength={1} value={val} onChange={e => handlePinInput(i, e.target.value, 'new')} style={pinBox} />))}
+                  {newPin.map((val, i) => (<input key={i} id={'np' + i} type='password' maxLength={1} value={val} onChange={e => handlePinInput(i, e.target.value, 'new')} onKeyDown={e => handleKeyDown(e, i, 'np')} style={pinBox} />))}
                 </div>
                 <p style={{ fontSize: '0.78rem', fontWeight: '600', color: '#6d28d9', marginBottom: '0.75rem', textAlign: 'center' }}>Confirm New PIN</p>
                 <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', marginBottom: '1.25rem' }}>
-                  {confirmNewPin.map((val, i) => (<input key={i} id={'cnp' + i} type='password' maxLength={1} value={val} onChange={e => handlePinInput(i, e.target.value, 'confirm')} style={pinBox} />))}
+                  {confirmNewPin.map((val, i) => (<input key={i} id={'cnp' + i} type='password' maxLength={1} value={val} onChange={e => handlePinInput(i, e.target.value, 'confirm')} onKeyDown={e => handleKeyDown(e, i, 'cnp')} style={pinBox} />))}
                 </div>
                 <button onClick={handleChangePin} disabled={pinChangeLoading} style={{ background: '#6d28d9', color: '#fff', border: 'none', borderRadius: '10px', padding: '0.85rem', fontSize: '0.95rem', fontWeight: '700', cursor: 'pointer', width: '100%', opacity: pinChangeLoading ? 0.7 : 1 }}>
                   {pinChangeLoading ? 'Changing...' : 'Change PIN'}

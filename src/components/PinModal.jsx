@@ -30,6 +30,13 @@ function PinModal({ title, onConfirm, onCancel, userId, mode }) {
     }
   }
 
+  
+  const handleKeyDown = (e, index, prefix) => {
+    if (e.key === 'Backspace' && !e.target.value && index > 0) {
+      document.getElementById(prefix + (index - 1))?.focus()
+    }
+  }
+
   const handleSubmit = async () => {
     const pinStr = pin.join('')
     if (pinStr.length < 4) { setError('Enter a 4-digit PIN'); return }
@@ -91,14 +98,14 @@ function PinModal({ title, onConfirm, onCancel, userId, mode }) {
             <div style={{ marginBottom: '1.25rem' }}>
               <p style={{ fontSize: '0.78rem', fontWeight: '600', color: '#6d28d9', marginBottom: '0.75rem', textAlign: 'center' }}>Enter PIN</p>
               <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
-                {pin.map((val, i) => (<input key={i} id={'pin' + i} type='password' maxLength={1} value={val} onChange={e => handleInput(i, e.target.value, false)} style={pinBox} />))}
+                {pin.map((val, i) => (<input key={i} id={'pin' + i} type='password' maxLength={1} value={val} onChange={e => handleInput(i, e.target.value, false)} onKeyDown={e => handleKeyDown(e, i, 'pin')} style={pinBox} />))}
               </div>
             </div>
             {mode === 'set' && (
               <div style={{ marginBottom: '1.25rem' }}>
                 <p style={{ fontSize: '0.78rem', fontWeight: '600', color: '#6d28d9', marginBottom: '0.75rem', textAlign: 'center' }}>Confirm PIN</p>
                 <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
-                  {confirmPin.map((val, i) => (<input key={i} id={'cpin' + i} type='password' maxLength={1} value={val} onChange={e => handleInput(i, e.target.value, true)} style={pinBox} />))}
+                  {confirmPin.map((val, i) => (<input key={i} id={'cpin' + i} type='password' maxLength={1} value={val} onChange={e => handleInput(i, e.target.value, true)} onKeyDown={e => handleKeyDown(e, i, 'cpin')} style={pinBox} />))}
                 </div>
               </div>
             )}
@@ -128,13 +135,13 @@ function PinModal({ title, onConfirm, onCancel, userId, mode }) {
             <div style={{ marginBottom: '1.25rem' }}>
               <p style={{ fontSize: '0.78rem', fontWeight: '600', color: '#6d28d9', marginBottom: '0.75rem', textAlign: 'center' }}>New PIN</p>
               <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
-                {newPin.map((val, i) => (<input key={i} id={'npin' + i} type='password' maxLength={1} value={val} onChange={e => handleNewPinInput(i, e.target.value, false)} style={pinBox} />))}
+                {newPin.map((val, i) => (<input key={i} id={'npin' + i} type='password' maxLength={1} value={val} onChange={e => handleNewPinInput(i, e.target.value, false)} onKeyDown={e => handleKeyDown(e, i, 'npin')} style={pinBox} />))}
               </div>
             </div>
             <div style={{ marginBottom: '1.25rem' }}>
               <p style={{ fontSize: '0.78rem', fontWeight: '600', color: '#6d28d9', marginBottom: '0.75rem', textAlign: 'center' }}>Confirm New PIN</p>
               <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
-                {confirmNewPin.map((val, i) => (<input key={i} id={'cnpin' + i} type='password' maxLength={1} value={val} onChange={e => handleNewPinInput(i, e.target.value, true)} style={pinBox} />))}
+                {confirmNewPin.map((val, i) => (<input key={i} id={'cnpin' + i} type='password' maxLength={1} value={val} onChange={e => handleNewPinInput(i, e.target.value, true)} onKeyDown={e => handleKeyDown(e, i, 'cnpin')} style={pinBox} />))}
               </div>
             </div>
             <div style={{ display: 'flex', gap: '0.75rem' }}>

@@ -70,6 +70,13 @@ function Signup() {
     if (value && index < 5) document.getElementById('otp' + (index + 1))?.focus()
   }
 
+  
+  const handleOtpKeyDown = (e, index) => {
+    if (e.key === 'Backspace' && !e.target.value && index > 0) {
+      document.getElementById('otp' + (index - 1))?.focus()
+    }
+  }
+
   const handleVerifyAndSignup = async (e) => {
     e.preventDefault()
     const otpStr = otp.join('')
@@ -175,7 +182,7 @@ function Signup() {
                 <p style={{ fontSize: '0.85rem', fontWeight: '600', color: '#6d28d9', marginBottom: '0.75rem', textAlign: 'center' }}>Enter 6-digit code</p>
                 <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', marginBottom: '1.5rem' }}>
                   {otp.map((val, i) => (
-                    <input key={i} id={'otp' + i} type='text' maxLength={1} value={val} onChange={e => handleOtpInput(i, e.target.value)} style={otpBox} />
+                    <input key={i} id={'otp' + i} type='text' maxLength={1} value={val} onChange={e => handleOtpInput(i, e.target.value)} onKeyDown={e => handleOtpKeyDown(e, i)} style={otpBox} />
                   ))}
                 </div>
                 <button type='submit' disabled={loading} style={{ background: '#6d28d9', color: '#ffffff', border: 'none', borderRadius: '10px', padding: '0.85rem', fontSize: '1rem', fontWeight: '700', cursor: 'pointer', width: '100%', opacity: loading ? 0.7 : 1 }}>
