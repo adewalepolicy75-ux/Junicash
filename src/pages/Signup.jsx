@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { FiHome } from 'react-icons/fi'
+import { FiHome, FiEye, FiEyeOff } from 'react-icons/fi'
 import { registerUser } from '../services/api'
 
 function Signup() {
   const [step, setStep] = useState(1)
   const [form, setForm] = useState({ firstName: '', middleName: '', lastName: '', email: '', password: '', confirm: '' })
   const [otp, setOtp] = useState(['', '', '', '', '', ''])
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState('')
@@ -141,7 +143,12 @@ function Signup() {
                 <label style={{ fontSize: '0.8rem', fontWeight: '600', color: '#6d28d9', display: 'block', marginBottom: '0.4rem' }}>Email *</label>
                 <input type='email' name='email' placeholder='you@example.com' value={form.email} onChange={handleChange} style={input} />
                 <label style={{ fontSize: '0.8rem', fontWeight: '600', color: '#6d28d9', display: 'block', marginBottom: '0.4rem' }}>Password *</label>
-                <input type='password' name='password' placeholder='........' value={form.password} onChange={handleChange} style={input} />
+                <div style={{ position: 'relative' }}>
+                  <input type={showPassword ? 'text' : 'password'} name='password' placeholder='........' value={form.password} onChange={handleChange} style={{ ...input, paddingRight: '2.5rem' }} />
+                  <span onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: '0.85rem', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', color: '#9ca3af', display: 'flex' }}>
+                    {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+                  </span>
+                </div>
                 {form.password && (
                   <div style={{ marginBottom: '1rem', background: '#f9fafb', borderRadius: '10px', padding: '0.75rem 1rem' }}>
                     {[
@@ -159,7 +166,12 @@ function Signup() {
                   </div>
                 )}
                 <label style={{ fontSize: '0.8rem', fontWeight: '600', color: '#6d28d9', display: 'block', marginBottom: '0.4rem' }}>Confirm Password *</label>
-                <input type='password' name='confirm' placeholder='........' value={form.confirm} onChange={handleChange} style={input} />
+                <div style={{ position: 'relative' }}>
+                  <input type={showConfirm ? 'text' : 'password'} name='confirm' placeholder='........' value={form.confirm} onChange={handleChange} style={{ ...input, paddingRight: '2.5rem' }} />
+                  <span onClick={() => setShowConfirm(!showConfirm)} style={{ position: 'absolute', right: '0.85rem', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', color: '#9ca3af', display: 'flex' }}>
+                    {showConfirm ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+                  </span>
+                </div>
                 <button type='submit' disabled={loading} style={{ background: '#6d28d9', color: '#ffffff', border: 'none', borderRadius: '10px', padding: '0.85rem', fontSize: '1rem', fontWeight: '700', cursor: 'pointer', width: '100%', marginTop: '0.5rem', opacity: loading ? 0.7 : 1 }}>
                   {loading ? 'Sending code...' : 'Continue'}
                 </button>
